@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+
+    <head>
+        <title> Plugin testing page </title>
+    </head>
+    <body>
+    <embed width="800" height="800" type="application/simpleNPAPI"  id="pluginId" >
+        <script type="text/javascript">
+            var plugin = document.getElementById("pluginId");
+            document.write("<br>Pluin version:"+plugin.version+"<br>")
+            document.write("Pluin copyright:"+plugin.copyright+"<br>")
+        </script>
+    </embed>
+    </body>
+</html>
