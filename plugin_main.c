@@ -42,7 +42,6 @@ bool plugin_has_method(NPObject *obj, NPIdentifier methodName)
 
 bool plugin_invoke(NPObject *obj, NPIdentifier methodName, const NPVariant *args, uint32_t argCount, NPVariant *result)
 {
-    logmsg("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh\n");
     bool ret = true;
     NPUTF8 *name = sBrowserFuncs->utf8fromidentifier(methodName);
     //if(strcmp(name, METHOD) == 0) {
@@ -59,11 +58,12 @@ bool plugin_invoke(NPObject *obj, NPIdentifier methodName, const NPVariant *args
     return ret;
 }
 
+
 bool plugin_invoke_default(NPObject *npobj, const NPVariant *args, uint32_t argCount, NPVariant *result)
 {
-    int i;
     return false;
 }
+
 
 
 
@@ -108,24 +108,7 @@ NP_GetMIMEDescription()
 NP_EXPORT(NPError)
 NP_GetValue(void* future, NPPVariable aVariable, void* aValue) {
 
-  NPObject *pluginInstance = NULL;
-
-  switch (aVariable) {
-    case NPPVpluginNameString:
-      *((char**)aValue) = NAME;
-      break;
-    case NPPVpluginDescriptionString:
-      *((char**)aValue) = DESCRIPTION;
-      break;
-    case NPPVpluginScriptableNPObject:
-      sBrowserFuncs->retainobject(pluginInstance);
-      *((NPObject **)aValue) = pluginInstance;
-    break;
-    default:
-      return NPERR_INVALID_PARAM;
-      break;
-  }
-  return NPERR_NO_ERROR;
+  return NPP_GetValue(future,aVariable,aValue);
 }
 
 NP_EXPORT(NPError)
@@ -204,22 +187,42 @@ NPP_URLNotify(NPP instance, const char* URL, NPReason reason, void* notifyData) 
 
 NPError
 NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
+  NPObject *pluginInstance = NULL;
+  NPError ret = NPERR_NO_ERROR;
+
+  if(instance)
+      pluginInstance = instance->pdata;
+  switch(variable) {
+    case NPPVpluginNameString:
+      *((char **)value) = VERSION;
+      break;
+    case NPPVpluginDescriptionString:
+      *((char **)value) = DESCRIPTION;
+      break;
+    case NPPVpluginScriptableIID:
+    case NPPVpluginScriptableInstance:
+        /* XPCOM scripting, obsolete */
+      ret = NPERR_GENERIC_ERROR;
+      break;
+    case NPPVpluginScriptableNPObject:
+        // If we didn't create any plugin instance, we create it.
+      if (pluginInstance) {
+        sBrowserFuncs->retainobject(pluginInstance);
+        *((NPObject **)value) = pluginInstance;
+        }else{
+          ret = NPERR_GENERIC_ERROR;
+        }
+        break;
+    default:
+      ret = NPERR_INVALID_PARAM;
+    }
+    return ret;
   return NPERR_GENERIC_ERROR;
 }
 
 NPError
 NPP_SetValue(NPP instance, NPNVariable variable, void *value) {
 
-  NPObject *pluginInstance = NULL;
-  switch (variable) {
-    case NPPVpluginScriptableNPObject:
-      sBrowserFuncs->retainobject(pluginInstance);
-      *((NPObject **)value) = pluginInstance;
-    break;
-    default:
-      return NPERR_INVALID_PARAM;
-      break;
-  }
   return NPERR_GENERIC_ERROR;
 }
 
