@@ -73,17 +73,18 @@ NPError
 NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved) {
 
   NPStream* stream;
-  char* myData = "<html><head><title>This is a message from my plug-in!</title></head><body><p><strong>This is a message from my plug-in!</strong></p></body>/html>";
+  char* myData = "<html><head><title>Hello Stream!</title></head><body><p><strong>Rcved from simpleNPAPI plug-in!</strong></p></body></html>";
   int32_t myLength = strlen(myData) + 1;
 
   /* Create the stream. */
-  NPN_NewStream(instance, "text/html", "_blank", &stream);
+  sBrowserFuncs->newstream(instance, "text/html", "_blank", &stream);
 
   /* Push data into the stream. */
-  NPN_Write(instance, stream, myLength, myData);
+  sBrowserFuncs->write(instance, stream, myLength, myData);
 
   /* Delete the stream. */
-  NPN_DestroyStream(instance, stream, NPRES_DONE);
+  sBrowserFuncs->destroystream(instance, stream, NPRES_DONE);
+
   return NPERR_NO_ERROR;
 }
 
