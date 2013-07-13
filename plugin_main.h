@@ -4,6 +4,7 @@
 
 #include "headers/npapi.h"
 #include "headers/npfunctions.h"
+#include "headers/npruntime.h"
 
 NPError NP_Initialize(NPNetscapeFuncs* bFuncs, NPPluginFuncs* pFuncs);
 NPError NP_Shutdown();

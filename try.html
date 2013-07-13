@@ -6,6 +6,13 @@
         <title> Plugin testing page </title>
     </head>
     <body>
-        <embed width="800" height="800" type="application/simpleNPAPI"  id="pluginId" >
+        <embed width="10" height="10" type="application/simpleNPAPI"  id="pluginId" >
+        <script type="text/javascript">
+            var plugin = document.getElementById("pluginId");
+            function exec(){
+                plugin.send()
+            }
+        </script>
+        <button type ="submit" value="Run" onclick="exec()">
     </body>
 </html>
