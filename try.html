@@ -9,10 +9,15 @@
         <embed width="10" height="10" type="application/simpleNPAPI"  id="pluginId" >
         <script type="text/javascript">
             var plugin = document.getElementById("pluginId");
+
             function exec(){
-                plugin.send()
+                var path=document.getElementById("text");
+                plugin.send(path.value)
             }
         </script>
-        <input type ="submit" value="Run" onclick="exec()">
+        <form>
+            Enter a file's path:<input type="text" id="text"/>
+            <input type ="submit" value="Run" onclick="exec()">
+        </form>
     </body>
 </html>

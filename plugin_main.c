@@ -1,5 +1,6 @@
 #include "plugin_main.h"
-
+#include "stdio.h"
+#include "string.h"
 
 #define NAME        "TryNPAPI"
 #define VERSION     "0.1"
@@ -45,12 +46,36 @@ bool plugin_invoke(NPObject *obj, NPIdentifier methodName, const NPVariant *args
     bool ret = true;
     NPUTF8 *name = sBrowserFuncs->utf8fromidentifier(methodName);
     //if(strcmp(name, METHOD) == 0) {
-      NPStream* stream;
-      char* myData = "<html><head><title>After Click!</title></head><body><p><strong>Rcved from simpleNPAPI plug-in!</strong></p></body></html>";
-      int32_t myLength = strlen(myData) + 1;
 
-      sBrowserFuncs->newstream(currentInstance, "text/html", "_blank", &stream);
-      sBrowserFuncs->write(currentInstance, stream, myLength, myData);
+    NPString str = NPVARIANT_TO_STRING(args[0]);
+    //char path[100];
+    char *p = malloc(sizeof(char)*100);
+    p = str.UTF8Characters;
+
+    FILE *fp;
+    fp = fopen(p,"r");
+    NPStream* stream;
+    char myData[100000];
+    fgets(myData,100000,fp);
+    fclose(fp);
+
+    char *head = "<html><head><title>";
+    char *middle = "</title></head><body><p><strong>";
+    char *tail = "</strong></p></body></html>";
+    int32_t myLength = strlen(head) + strlen(middle) + strlen(tail) + strlen(myData) + strlen(p) + 1;
+    char *toSend = malloc(sizeof(char)*myLength);
+
+    strcpy(toSend, head);
+    strcat(toSend, p);
+    strcat(toSend, middle);
+    strcat(toSend, myData);
+    strcat(toSend, tail);
+
+
+    sBrowserFuncs->newstream(currentInstance, "text/html", "_blank", &stream);
+    sBrowserFuncs->write(currentInstance, stream, myLength, toSend);
+    //else
+    //  sBrowserFuncs->write(currentInstance, stream, (strlen(error) + 1), error);
     //}
 
     sBrowserFuncs->memfree(name);
@@ -124,12 +149,12 @@ NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* 
   instance->pdata = sBrowserFuncs->createobject(instance, &scriptablePluginClass);
   currentInstance = instance;
 
-  NPStream* stream;
-      char* myData = "<html><head><title>Hello Stream!</title></head><body><p><strong>Rcved from simpleNPAPI plug-in!</strong></p></body></html>";
-      int32_t myLength = strlen(myData) + 1;
+  //NPStream* stream;
+      //char* myData = "<html><head><title>Hello Stream!</title></head><body><p><strong>Rcved from simpleNPAPI plug-in!</strong></p></body></html>";
+      //int32_t myLength = strlen(myData) + 1;
 
-      sBrowserFuncs->newstream(instance, "text/html", "_blank", &stream);
-      sBrowserFuncs->write(instance, stream, myLength, myData);
+      //sBrowserFuncs->newstream(instance, "text/html", "_blank", &stream);
+      //sBrowserFuncs->write(instance, stream, myLength, myData);
 
   //sBrowserFuncs->destroystream(instance, stream, NPRES_DONE);
 
