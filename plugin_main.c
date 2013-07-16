@@ -16,8 +16,6 @@ NPP currentInstance;
 bool plugin_has_method(NPObject *obj, NPIdentifier methodName);
 bool plugin_invoke(NPObject *obj, NPIdentifier methodName, const NPVariant *args, uint32_t argCount, NPVariant *result);
 bool plugin_invoke_default(NPObject *npobj, const NPVariant *args, uint32_t argCount, NPVariant *result);
-bool hasProperty(NPObject *obj, NPIdentifier propertyName);
-bool getProperty(NPObject *obj, NPIdentifier propertyName, NPVariant *result);
 
 static struct NPClass scriptablePluginClass = {
     NP_CLASS_STRUCT_VERSION,
@@ -219,7 +217,7 @@ NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
       pluginInstance = instance->pdata;
   switch(variable) {
     case NPPVpluginNameString:
-      *((char **)value) = VERSION;
+      *((char **)value) = NAME;
       break;
     case NPPVpluginDescriptionString:
       *((char **)value) = DESCRIPTION;
