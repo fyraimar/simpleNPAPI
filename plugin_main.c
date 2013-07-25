@@ -39,6 +39,8 @@ bool plugin_has_method(NPObject *obj, NPIdentifier methodName)
     return result;
 }
 
+
+
 bool plugin_invoke(NPObject *obj, NPIdentifier methodName, const NPVariant *args, uint32_t argCount, NPVariant *result)
 {
     bool ret = true;
